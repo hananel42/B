@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>גלי חלקיקים אינסופיים</title>
+    <style>
+        
+
+        body {
+            background: transparent !important;
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        #fullscreenBtn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 20px;
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+        <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const fullscreenBtn = document.getElementById("fullscreenBtn");
+
+        // עדכון מידות הקנבס
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const numParticles = 1000;
+        const waves = [];
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.originX = x;
+                this.originY = y;
+                this.size = 1.2;
+                this.color = `hsl(${Math.random() * 60+200}, ${Math.random()*100}%, ${Math.random()*100}%)`;
+                this.force = 0;
+                this.angle = 0;
+            }
+
+            move() {
+                
+                    this.force *= 0.97;
+                    this.angle += 0.1;
+                    this.x = this.originX + Math.cos(this.angle) * this.force;
+                    this.y = this.originY + Math.sin(this.angle) * this.force;
+
+            }
+
+            applyWave(x, y, radius,color) {
+                let dx = this.x - x;
+                let dy = this.y - y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < radius && distance > radius - 70) {
+                    this.force = (radius - distance) * 0.4;
+                    this.angle = Math.atan2(dy, dx);
+                    //this.color = `hsl(${Math.random() * 60+color}, ${Math.random()*10+90*200/radius}%, ${Math.random()*100}%)`
+                    //this.size = radius/200;
+                }
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        class Wave {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.radius = 0;
+                this.speed = 8;
+                this.color = Math.random()*300
+                this.active = true;
+            }
+
+            expand() {
+                if (this.active) {
+                    this.radius += this.speed;
+                    if (this.radius > (canvas.width**2+canvas.height**2)**0.5) {
+                        this.active = false;
+                    }
+                }
+            }
+        }
+
+        function createParticles() {
+            for (let i = 0; i < numParticles; i++) {
+                let x = Math.random() * (canvas.width+10)-5;
+                let y = Math.random() * (canvas.height+10)-5;
+                particles.push(new Particle(x, y));
+            }
+        }
+
+        function animate() {
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let wave of waves) {
+                wave.expand();
+                for (let particle of particles) {
+                    particle.applyWave(wave.x, wave.y, wave.radius,wave.color);
+                }
+            }
+
+            for (let particle of particles) {
+                particle.move();
+                particle.draw();
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        function createWave(x, y) {
+            
+            waves.push(new Wave(x, y));
+            waves = waves.filter(wave => wave.active);
+        }
+
+        // הוספת אירוע למעבר למסך מלא
+        canvas.addEventListener("click", () => {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.mozRequestFullScreen) {
+                document.documentElement.mozRequestFullScreen();
+            } else if (document.documentElement.webkitRequestFullscreen) {
+                document.documentElement.webkitRequestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) {
+                document.documentElement.msRequestFullscreen();
+            }
+           
+        });
+
+        // יצירת גל עם לחיצה או מגע במסך
+        canvas.addEventListener("touchstart", (event) => {
+    for (let touch of event.touches) {
+        createWave(touch.clientX, touch.clientY);
+    }
+    event.preventDefault(); // מונע פעולות ברירת מחדל
+});
+
+canvas.addEventListener("touchmove", (event) => {
+    for (let touch of event.touches) {
+        createWave(touch.clientX, touch.clientY);
+    }
+    event.preventDefault(); // מונע פעולות ברירת מחדל
+});
+
+        // עדכון גודל הקנבס במקרה של שינוי גודל חלון
+        window.addEventListener("resize", () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles.length = 0;
+            createParticles();
+        });
+
+        createParticles();
+        animate();
+    </script>
+</body>
+</html>

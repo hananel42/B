@@ -2,6 +2,7 @@
 <html lang="he">
 <head>
     <meta charset="UTF-8">
+    <link rel="manifest" href="manifest.json">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>גלי חלקיקים אינסופיים</title>
     <style>
@@ -182,5 +183,13 @@ canvas.addEventListener("touchmove", (event) => {
         createParticles();
         animate();
     </script>
+    <script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/B/service-worker.js")
+      .then(() => console.log("Service Worker Registered"))
+      .catch((error) => console.log("Service Worker Registration Failed:", error));
+  }
+    </script>
+    
 </body>
 </html>

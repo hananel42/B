@@ -46,7 +46,7 @@
 
         const particles = [];
         const numParticles = 1000;
-        const waves = [];
+        let waves = [];
 
         class Particle {
             constructor(x, y) {
@@ -54,7 +54,7 @@
                 this.y = y;
                 this.originX = x;
                 this.originY = y;
-                this.size = 1.2;
+                this.size = 0;
                 this.color = `hsl(${Math.random() * 60+200}, ${Math.random()*100}%, ${Math.random()*100}%)`;
                 this.force = 0;
                 this.angle = 0;
@@ -64,6 +64,7 @@
                 
                     this.force *= 0.97;
                     this.angle += 0.1;
+                    this.size -= this.size > 0.1 ? 0.1:0;
                     this.x = this.originX + Math.cos(this.angle) * this.force;
                     this.y = this.originY + Math.sin(this.angle) * this.force;
 
@@ -77,6 +78,7 @@
                 if (distance < radius && distance > radius - 70) {
                     this.force = (radius - distance) * 0.4;
                     this.angle = Math.atan2(dy, dx);
+                    this.size += this.size < 1.2 ? 0.1:0;
                     //this.color = `hsl(${Math.random() * 60+color}, ${Math.random()*10+90*200/radius}%, ${Math.random()*100}%)`
                     //this.size = radius/200;
                 }
@@ -103,7 +105,7 @@
             expand() {
                 if (this.active) {
                     this.radius += this.speed;
-                    if (this.radius > (canvas.width**2+canvas.height**2)**0.5) {
+                    if (this.radius > (canvas.width**2+canvas.height**2)**0.5+50) {
                         this.active = false;
                     }
                 }

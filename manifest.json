@@ -1,0 +1,21 @@
+{
+  "name": "B App",
+  "short_name": "Hananel42",
+  "description": "אפליקציית PWA לאתר Hananel42",
+  "start_url": "https://hananel42.github.io/B/",
+  "display": "standalone",
+  "background_color": "rgba(0,0,0,0)",
+  "theme_color": "rgba(0,0,0,0)",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

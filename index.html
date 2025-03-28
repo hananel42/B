@@ -38,6 +38,11 @@
         <canvas id="canvas"></canvas>
 
     <script>
+        document.addEventListener("DOMContentLoaded", () => {
+    if (getComputedStyle(document.body).backgroundColor !== "rgba(0, 0, 0, 0)") {
+        console.warn("⚠️ הדפדפן לא תומך בשקיפות מלאה!");
+    }
+});
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
         const fullscreenBtn = document.getElementById("fullscreenBtn");

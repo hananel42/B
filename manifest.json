@@ -3,7 +3,7 @@
   "short_name": "Hananel42",
   "description": "אפליקציית PWA לאתר Hananel42",
   "start_url": "https://hananel42.github.io/B/",
-  "display": "standalone",
+  "display": "fullscreen",
   "background_color": "transparent",
   "theme_color": "transparent",
   "icons": [
